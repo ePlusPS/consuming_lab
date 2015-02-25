@@ -1,9 +1,6 @@
 # consuming_lab
 Lab guides for Consuming OpenStack
 
-If we incorporate code, it can be written in markdown format
+Lab_1_Feb_24.pdf - Basics of using Nova
+Lab_2_Feb_25.pdf - Basics of using Swift and Cinder
 
-	and code would be here
-	or here
-
-End
