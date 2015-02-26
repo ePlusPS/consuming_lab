@@ -25,7 +25,15 @@ parameters:
     description: Newtork name to assocaite server with
 
 resources:
-  my_instance:
+  # my_instance:
+  #   type: OS::Nova::Server
+  #   properties:
+  #     key_name: { get_param: key_name }
+  #     image: { get_param: image }
+  #     flavor: { get_param: instance_type }
+  #     networks:
+  #       - port: { get_resource: server1_port }
+  my_other_instance:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: key_name }
