@@ -17,21 +17,21 @@ NOTE:  If you are running this on DevStack, you can run these commands nearly as
 
 # Get token, manually copy token and tenant info into export commands. These allow these identifiers to be called in later curl commands with the ${NAME} syntax rather than being added each time.
 
-export endpoint=${REPLACE_WITH_ENDPOINT_ADDRESS:-127.0.0.1}
-curl -i "http://${endpoint}:5000/v2.0/tokens" -X POST -H "Content-Type: application/json" -H "Accept: application/json"  -d '{"auth": {"tenantName": "admin", "passwordCredentials": {"username": "admin", "password": "ubuntu"}}}' | python -mjson.tool
+export endpoint=${REPLACE_WITH_ENDPOINT_ADDRESS:-dnvrco-api.os.cloud.twc.net}
+curl -i "https://${endpoint}:5000/v2.0/tokens" -X POST -H "Content-Type: application/json" -H "Accept: application/json"  -d '{"auth": {"tenantName": "admin", "passwordCredentials": {"username": "admin", "password": "ubuntu"}}}' | python -mjson.tool
 
 export token=REPLACE_WITH_ACCESS_TOKEN_ID
 
 export tenant_id=REPLACE_WITH_ACCESS_TENANT_ID
 
 # List servers, should be empty
-curl -v -H "X-Auth-Token:${token}" http://${endpoint}:8774/v2/${tenant_id}/servers | tail -n 1 | python -mjson.tool
+curl -v -H "X-Auth-Token:${token}" https://${endpoint}:8774/v2/${tenant_id}/servers | tail -n 1 | python -mjson.tool
 
 # Get service list— seem to get service list with prior command…
-curl -s \ -H "X-Auth-Token: ${token}" \ http://${endpoint}:5000/v3/services | python -mjson.tool
+curl -s \ -H "X-Auth-Token: ${token}" \ https://${endpoint}:5000/v3/services | python -mjson.tool
 
 # keystone service-list --debug
-curl -i -X GET http://${endpoint}:35357/v2.0/OS-KSADM/services -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: ${token}" | python -mjson.tool
+curl -i -X GET https://${endpoint}:35357/v2.0/OS-KSADM/services -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: ${token}" | python -mjson.tool
 
 #Use service id from prior command to find service endpoint for glance and nova. First five alpha-numeric characters should be enough to differentiate from other listed endpoints in following step. For example:
     {
@@ -53,33 +53,33 @@ So glance= 5cf44… and nova= 5c817…
 
 
 # Get endpoints list
-curl -i -X GET http://${endpoint}:35357/v2.0/endpoints -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: ${token}" | python -mjson.tool
+curl -i -X GET https://${endpoint}:35357/v2.0/endpoints -H "User-Agent: python-keystoneclient" -H "X-Auth-Token: ${token}" | python -mjson.tool
 
 For Example: NOVA ENDPOINT
   {
-      "internalurl": "http://${endpoint}:8774/v2/$(tenant_id)s",
-      "adminurl": "http://${endpoint}:8774/v2/$(tenant_id)s",
+      "internalurl": "https://${endpoint}:8774/v2/$(tenant_id)s",
+      "adminurl": "https://${endpoint}:8774/v2/$(tenant_id)s",
       "service_id": "5c817e2087cb43859516a0757b27d339",
       "region": "RegionOne",
       "enabled": true,
       "id": "265765fe58fc4fd6ab1c6fe4ae662420",
-      "publicurl": "http://${endpoint}:8774/v2/$(tenant_id)s"
+      "publicurl": "https://${endpoint}:8774/v2/$(tenant_id)s"
     },
 
 For example: GLANCE ENDPOINT
  {
-      "internalurl": "http://${endpoint}:9292",
-      "adminurl": "http://${endpoint}:9292",
+      "internalurl": "https://${endpoint}:9292",
+      "adminurl": "https://${endpoint}:9292",
       "service_id": "5cf44d44abc54fc08ca23211d0ecc391",
       "region": "RegionOne",
       "enabled": true,
       "id": "30df89def7ee4e6d9283b430e3aa4b54",
-      "publicurl": "http://${endpoint}:9292"
+      "publicurl": "https://${endpoint}:9292"
     },
 
 # Get image list from glance
 
-curl -s http://${endpoint}:8774/v2/${tenant_id}/images 
+curl -s https://${endpoint}:8774/v2/${tenant_id}/images 
 -X GET 
 -H "X-Auth-Project-Id: admin" 
 -H "Accept: application/json" 
@@ -89,7 +89,7 @@ export image_id=REPLACE_WITH_IMAGE_ID
 
 # Get flavor list from nova
 
-curl -s http://${endpoint}:8774/v2/${tenant_id}/flavors 
+curl -s https://${endpoint}:8774/v2/${tenant_id}/flavors 
 -X GET 
 -H "X-Auth-Project-Id: admin" 
 -H "Accept: application/json" 
@@ -98,13 +98,13 @@ curl -s http://${endpoint}:8774/v2/${tenant_id}/flavors
 export flavor_id= REPLACE_WITH_FLAVOR_ID
 
 #get keypair
-curl -i -X 'POST'  -H "Content-type: application/json" -H "X-Auth-Token: ${Auth_Token}" -d '{"keypair": {"name": "keypair_1"}}' http://${endpoint}:8774/v2/${tenant_id}/os-keypairs'
+curl -i -X 'POST'  -H "Content-type: application/json" -H "X-Auth-Token: ${Auth_Token}" -d '{"keypair": {"name": "keypair_1"}}' https://${endpoint}:8774/v2/${tenant_id}/os-keypairs'
 
 export keypair=REPLACE_WITH_KEYPAIR
 
 # build server
 
-curl -i http://${endpoint}:8774/v2/${tenant_id}/servers 
+curl -i https://${endpoint}:8774/v2/${tenant_id}/servers 
 -X POST -H "X-Auth-Project-Id: admin" 
 -H "Content-Type: application/json" 
 -H "Accept: application/json" 
