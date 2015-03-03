@@ -19,7 +19,9 @@ parameters:
     default: standard.small
   subnet_id:
     type: string
-    description: subnet on which the load balancer will be located
+    description: >
+      subnet on which the load balancer will be located
+      and this is a multi-line description
     default: default-subnet
   database_name:
     type: string
