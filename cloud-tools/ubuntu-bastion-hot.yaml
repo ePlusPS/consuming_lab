@@ -6,7 +6,7 @@ parameters:
   key_name:
     type: string
     label: Key Name
-    default: rhs
+    default: default
     description: Name of key-pair to be used for compute instance
     # constraints:
     #   - custom_constraint: nova.keypair
@@ -39,21 +39,18 @@ parameters:
   tenant_name:
     type: string
     label: Tenant Project Name
-    default: rstarmer-class
     constraints:
       - allowed_pattern: "[a-z]+[a-zA-Z0-9-]*"
         description: User name must start with an uppercase character
   user_name:
     type: string
     label: Tenant User Name
-    default: rstarmer
     constraints:
       - allowed_pattern: "[a-z]+[a-zA-Z0-9]*"
         description: User name must start with an uppercase character
   floating_ip_id:
     type: string
     label: ID of Floating IP
-    default: 1404f1fd-06c7-4733-baff-0194dfad8bbf
 
 
 resources:
