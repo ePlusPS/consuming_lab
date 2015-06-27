@@ -74,17 +74,23 @@ resources:
             # http://50.250.253.88:8080/v1/AUTH_e71d06beb59a40d1a9e29df6b014444e/osbootcamp/ubuntu-user-data.sh
 
             # Create a local password
-            passwd ec2-user <<EOF
+            passwd cloud-user <<EOF
             DiffiCultPassWordToRemember
             DiffiCultPassWordToRemember
             EOF
 
-            apt-get update -y
+            yum update -y
+
+            yum install python-setuptools python-devel -y
+            yum groupinstall "@Development tools" -y
+            yum install libffi-devel openssl-devel -y
+
+            easy_install pip
+
             clients='nova
             neutron
             glance
             heat
-            cinder
             swift
             monasca
             designate
@@ -93,8 +99,12 @@ resources:
 
             for n in ${clients}
             do
-             apt-get install python-${n}client  -y
+             pip install python-${n}client
             done
+
+            pip install python-cinderclient==1.1.1
+            easy_install --upgrade requests[security]
+
 
             echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
 

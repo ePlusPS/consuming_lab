@@ -24,13 +24,14 @@ export OS_TENANT_NAME="rstarmer-class"
 export OS_USERNAME="rstarmer"
 
 # With Keystone you pass the keystone password.
-#echo "Please enter your OpenStack Password: "
-#read -sr OS_PASSWORD_INPUT
-#export OS_PASSWORD=$OS_PASSWORD_INPUT
-export OS_PASSWORD="OCclassPW!"
+echo "Please enter your OpenStack Password: "
+read -sr OS_PASSWORD_INPUT
+export OS_PASSWORD=$OS_PASSWORD_INPUT
 
 # If your configuration has multiple regions, we set that information here.
 # OS_REGION_NAME is optional and only valid in certain environments.
 export OS_REGION_NAME="NCE"
 # Don't leave a blank variable, unset it if it was empty
 if [ -z "$OS_REGION_NAME" ]; then unset OS_REGION_NAME; fi
+
+export PS1='[\u@\h \W(nce)]\$ '
