@@ -1,0 +1,154 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a bastion host with the CLI tools
+
+parameters:
+  key_name:
+    type: string
+    label: Key Name
+    default: rhs
+    description: Name of key-pair to be used for compute instance
+    # constraints:
+    #   - custom_constraint: nova.keypair
+  image:
+    type: string
+    label: Image Name
+    default: CentOS-Server-7-x86_64
+    description: Image to be used for compute instance
+    # constraints:
+    #   - custom_constraint: glance.image
+  instance_type:
+    type: string
+    label: Instance Type
+    default: standard.small
+    description: Type of instance (flavor) to be used
+    # constraints:
+    #   - custom_constraint: nova.flavor
+  network:
+    type: string
+    label: Network Name
+    default: default-network
+    description: Newtork name to assocaite server with
+    # constraints:
+    #   - custom_constraint: neutron.network
+  public_net:
+    type: string
+    label: Public Network
+    default: Ext-Net
+    description: Newtork name for Floating IPs
+  tenant_name:
+    type: string
+    label: Tenant Project Name
+    default: rstarmer-class
+    constraints:
+      - allowed_pattern: "[a-z]+[a-zA-Z0-9-]*"
+        description: User name must start with an uppercase character
+  user_name:
+    type: string
+    label: Tenant User Name
+    default: rstarmer
+    constraints:
+      - allowed_pattern: "[a-z]+[a-zA-Z0-9]*"
+        description: User name must start with an uppercase character
+  floating_ip_id:
+    type: string
+    label: ID of Floating IP
+    default: 1404f1fd-06c7-4733-baff-0194dfad8bbf
+
+
+resources:
+  cloud_tools:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      image: { get_param: image }
+      flavor: { get_param: instance_type }
+      networks:
+        - port: { get_resource: server_1_port }
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            #
+            # Setup an Ubuntu VM with the OpenStack Cloud Tools
+            # http://50.250.253.88:8080/v1/AUTH_e71d06beb59a40d1a9e29df6b014444e/osbootcamp/ubuntu-user-data.sh
+
+            # Create a local password
+            passwd ec2-user <<EOF
+            DiffiCultPassWordToRemember
+            DiffiCultPassWordToRemember
+            EOF
+
+            apt-get update -y
+            clients='nova
+            neutron
+            glance
+            heat
+            cinder
+            swift
+            monasca
+            designate
+            openstack
+            keystone'
+
+            for n in ${clients}
+            do
+             apt-get install python-${n}client  -y
+            done
+
+            echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
+
+            cat > ~ec2-user/openrc.sh <<EOF
+            #!/bin/bash
+            export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
+            export OS_TENANT_NAME="$tenant_name"
+            export OS_USERNAME="$user_name"
+            export OS_REGION_NAME="NCE"
+
+            echo "Please enter your OpenStack Password: "
+            read -sr OS_PASSWORD_INPUT
+            export OS_PASSWORD=\$OS_PASSWORD_INPUT
+
+            export PS1='[\u@\h \W(nce)]\$ '
+            EOF
+
+            cat > ~ec2-user/w.sh <<EOF
+            #!/bin/bash
+
+            export OS_AUTH_URL=https://dnvrco-api.os.cloud.twc.net:5000/v2.0
+            export OS_REGION_NAME="NCW"
+            export PS1='[\u@\h \W(ncw)]\$ '
+            EOF
+            
+            cat > ~ec2-user/e.sh <<EOF
+            #!/bin/bash
+
+            export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
+            export OS_REGION_NAME="NCE"
+            export PS1='[\u@\h \W(nce)]\$ '
+            EOF
+
+
+          params:
+            $tenant_name: { get_param: tenant_name}
+            $user_name: { get_param: user_name }
+
+  server_1_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network }
+  # server_1_floating_ip:
+  #   type: OS::Neutron::FloatingIP
+  #   properties:
+  #     floating_network: { get_param: public_network }
+  # server_1_floating_ip_association:
+  #   type: OS::Neutron::FloatingIPAssociation
+  #   properties:
+  #     floatingip_id: { get_resource: server_1_floating_ip }
+  #     port_id: { get_param: server_1_port }
+
+  server_1_floating_ip_association:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_param: floating_ip_id }
+      port_id: { get_resource: server_1_port }
