@@ -1,6 +1,13 @@
-# consuming_lab
-Lab guides for Consuming OpenStack
+Lab material for Consuming Cloud
+================================
 
-Lab_1_Feb_24.pdf - Basics of using Nova
-Lab_2_Feb_25.pdf - Basics of using Swift and Cinder
+Most of the class material has moved to:
+
+  http://onecloudclass.com
+
+The cloud-tools directory, however, includes
+some user-data scripts and heat templates that
+are intended to simplify the startup of a 
+"bastion" host that has all of the openstack
+command line tools available.
 

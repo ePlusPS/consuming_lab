@@ -1,7 +1,6 @@
 #!/bin/bash
 #
 # Setup an Ubuntu VM with the OpenStack Cloud Tools
-# http://50.250.253.88:8080/v1/AUTH_e71d06beb59a40d1a9e29df6b014444e/osbootcamp/ubuntu-user-data.sh
 
 apt-get update -y
 clients='nova
@@ -22,7 +21,7 @@ done
 
 echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
 
-cat > ~ubuntu/openrc_first.sh <<EOF
+cat > ~ec2-user/openrc_first.sh <<EOF
 #!/bin/bash
 
 # To use an OpenStack cloud you need to authenticate against the Identity
@@ -65,7 +64,7 @@ export OS_PASSWORD=\$OS_PASSWORD_INPUT
 export OS_REGION_NAME="NCE"
 echo "Your region is set to \${OS_REGION_NAME}"
 
-cat > ~ubuntu/openrc.sh <<EOD
+cat > ~ec2-user/openrc.sh <<EOD
 #!/bin/bash
 export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
 export OS_TENANT_NAME="\${OS_TENANT_NAME}"
