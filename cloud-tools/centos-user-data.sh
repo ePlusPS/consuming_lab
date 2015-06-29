@@ -32,8 +32,8 @@ easy_install --upgrade requests[security]
 
 
 echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
-
-cat > ~cloud-user/openrc_first.sh <<EOF
+user=`ls /home | head -1`
+cat > /home/$user/openrc_first.sh <<EOF
 #!/bin/bash
 
 # To use an OpenStack cloud you need to authenticate against the Identity
@@ -77,7 +77,7 @@ export OS_PASSWORD=\$OS_PASSWORD_INPUT
 export OS_REGION_NAME="NCE"
 echo "Your region is set to \${OS_REGION_NAME}"
 
-cat > ~cloud-user/openrc.sh <<EOD
+cat > /home/$user/openrc.sh <<EOD
 #!/bin/bash
 export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
 export OS_TENANT_NAME="\${OS_TENANT_NAME}"
@@ -105,4 +105,3 @@ You can then run commands like:
 EOE
 
 EOF
-
