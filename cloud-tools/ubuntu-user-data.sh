@@ -65,6 +65,8 @@ export OS_PASSWORD=\$OS_PASSWORD_INPUT
 export OS_REGION_NAME="NCE"
 echo "Your region is set to \${OS_REGION_NAME}"
 
+export PS1='[\u@\h \W(nce)]\$ '
+
 cat > /home/$user/openrc.sh <<EOD
 #!/bin/bash
 export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
@@ -75,6 +77,7 @@ export OS_REGION_NAME="NCE"
 echo "Please enter your OpenStack Password: "
 read -sr OS_PASSWORD_INPUT
 export OS_PASSWORD=\\\$OS_PASSWORD_INPUT
+export PS1='[\u@\h \W(nce)]\$ '
 EOD
 chmod +x openrc.sh
 
