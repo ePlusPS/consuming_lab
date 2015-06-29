@@ -42,7 +42,7 @@ export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
 # as the entity that owns the resources.  We really only need the Tenant Name
 # export OS_TENANT_ID=88d8c5d66153476d9d96ca98df9b0894
 echo "Please enter your OpenStack Tenant Name: "
-read -sr OS_TENANT_INPUT
+read -r OS_TENANT_INPUT
 export OS_TENANT_NAME=\$OS_TENANT_INPUT
 echo "You set your Tenant Name to: \${OS_TENANT_NAME}"
 
@@ -51,7 +51,7 @@ export OS_PROJECT_NAME=\${OS_TENANT_NAME}
 # In addition to the owning entity (tenant), OpenStack stores the entity
 # performing the action as the **user**.
 echo "Please enter your OpenStack Username: "
-read -sr OS_USER_INPUT
+read -r OS_USER_INPUT
 export OS_USERNAME=\$OS_USER_INPUT
 echo "You set your User Name to: \${OS_USERNAME}"
 
