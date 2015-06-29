@@ -71,7 +71,7 @@ resources:
             # http://50.250.253.88:8080/v1/AUTH_e71d06beb59a40d1a9e29df6b014444e/osbootcamp/ubuntu-user-data.sh
 
             # Create a local password
-            passwd ec2-user <<EOF
+            passwd ubuntu <<EOF
             DiffiCultPassWordToRemember
             DiffiCultPassWordToRemember
             EOF
@@ -95,7 +95,7 @@ resources:
 
             echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
 
-            cat > ~ec2-user/openrc.sh <<EOF
+            cat > ~ubuntu/openrc.sh <<EOF
             #!/bin/bash
             export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
             export OS_TENANT_NAME="$tenant_name"
@@ -109,7 +109,7 @@ resources:
             export PS1='[\u@\h \W(nce)]\$ '
             EOF
 
-            cat > ~ec2-user/w.sh <<EOF
+            cat > ~ubuntu/w.sh <<EOF
             #!/bin/bash
 
             export OS_AUTH_URL=https://dnvrco-api.os.cloud.twc.net:5000/v2.0
@@ -117,7 +117,7 @@ resources:
             export PS1='[\u@\h \W(ncw)]\$ '
             EOF
             
-            cat > ~ec2-user/e.sh <<EOF
+            cat > ~ubuntu/e.sh <<EOF
             #!/bin/bash
 
             export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
