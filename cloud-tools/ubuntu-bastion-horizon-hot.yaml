@@ -1,6 +1,10 @@
 heat_template_version: 2013-05-23
 
-description: Simple template to deploy a bastion host with the CLI tools
+description: >
+  Simple template to deploy a bastion host with the CLI tools
+  via the Horizon UI. This assumes that there is still quota
+  for additional Floating IP address allocation, as this template
+  will allocate a new Floating IP for this VM deployment
 
 parameters:
   key_name:
@@ -11,7 +15,7 @@ parameters:
   image:
     type: string
     label: Image Name
-    default: CentOS-Server-7-x86_64
+    default: Ubuntu-Server-14.04
     description: Image to be used for compute instance
   instance_type:
     type: string
@@ -40,15 +44,12 @@ parameters:
     constraints:
       - allowed_pattern: "[a-z]+[a-zA-Z0-9]*"
         description: User name must start with an uppercase character
-  floating_ip_id:
-    type: string
-    label: ID of Floating IP
-
 
 resources:
   cloud_tools:
     type: OS::Nova::Server
     properties:
+      name: cloud-tools
       key_name: { get_param: key_name }
       image: { get_param: image }
       flavor: { get_param: instance_type }
@@ -60,27 +61,22 @@ resources:
             #!/bin/bash
             #
             # Setup an Ubuntu VM with the OpenStack Cloud Tools
-            # http://50.250.253.88:8080/v1/AUTH_e71d06beb59a40d1a9e29df6b014444e/osbootcamp/ubuntu-user-data.sh
+
+            # Determine the local cloud user, most likely the
+            # Only user in the /home diretory, and for an
+            # example, set the local password as well.
             user=`ls /home | head -1`
-            # Create a local password
             passwd $user <<EOF
             DiffiCultPassWordToRemember
             DiffiCultPassWordToRemember
             EOF
 
-            yum update -y
-
-            yum install python-setuptools python-devel -y
-            yum groupinstall "@Development tools" -y
-            yum install libffi-devel openssl-devel -y
-
-            easy_install pip
-
+            apt-get update -y
             clients='nova
             neutron
             glance
             heat
-            swift
+            cinder
             monasca
             designate
             openstack
@@ -88,12 +84,12 @@ resources:
 
             for n in ${clients}
             do
-             pip install python-${n}client
+             apt-get install python-${n}client  -y
             done
 
-            pip install python-cinderclient==1.1.1
-            easy_install --upgrade requests[security]
+            apt-get install python-pip -y
 
+            pip install --upgrade python-swiftclient
 
             echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
 
@@ -136,18 +132,13 @@ resources:
     type: OS::Neutron::Port
     properties:
       network: { get_param: network }
-  # server_1_floating_ip:
-  #   type: OS::Neutron::FloatingIP
-  #   properties:
-  #     floating_network: { get_param: public_net }
-  # server_1_floating_ip_association:
-  #   type: OS::Neutron::FloatingIPAssociation
-  #   properties:
-  #     floatingip_id: { get_resource: server_1_floating_ip }
-  #     port_id: { get_resource: server_1_port }
 
+  server_1_floating_ip_id:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_net }
   server_1_floating_ip_association:
     type: OS::Neutron::FloatingIPAssociation
     properties:
-      floatingip_id: { get_param: floating_ip_id }
+      floatingip_id: { get_resource: server_1_floating_ip_id }
       port_id: { get_resource: server_1_port }

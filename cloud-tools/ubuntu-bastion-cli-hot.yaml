@@ -1,6 +1,9 @@
 heat_template_version: 2013-05-23
 
-description: Simple template to deploy a bastion host with the CLI tools
+description: >
+  Simple template to deploy a bastion host with the CLI tools
+  This template requires a Floating IP ID for the instance that
+  will be created.
 
 parameters:
   key_name:
@@ -8,29 +11,21 @@ parameters:
     label: Key Name
     default: default
     description: Name of key-pair to be used for compute instance
-    # constraints:
-    #   - custom_constraint: nova.keypair
   image:
     type: string
     label: Image Name
     default: Ubuntu-Server-14.04
     description: Image to be used for compute instance
-    # constraints:
-    #   - custom_constraint: glance.image
   instance_type:
     type: string
     label: Instance Type
     default: standard.small
     description: Type of instance (flavor) to be used
-    # constraints:
-    #   - custom_constraint: nova.flavor
   network:
     type: string
     label: Network Name
     default: default-network
     description: Newtork name to assocaite server with
-    # constraints:
-    #   - custom_constraint: neutron.network
   public_net:
     type: string
     label: Public Network
@@ -48,10 +43,19 @@ parameters:
     constraints:
       - allowed_pattern: "[a-z]+[a-zA-Z0-9]*"
         description: User name must start with an uppercase character
+
   floating_ip_id:
     type: string
     label: ID of Floating IP
 
+  # # Perhaps it will be possible to allocate via IP address
+  # # In the future, in which case this param may be useful
+  # floating_ip:
+  #   type: string
+  #   label: Floating IP address
+  #   constraints:
+  #     - allowed_pattern: "^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"
+  #       description: This must be a valid IP address
 
 resources:
   cloud_tools:
@@ -71,7 +75,9 @@ resources:
             # Setup an Ubuntu VM with the OpenStack Cloud Tools
             # http://50.250.253.88:8080/v1/AUTH_e71d06beb59a40d1a9e29df6b014444e/osbootcamp/ubuntu-user-data.sh
 
-            # Create a local password
+            # Determine the local cloud user, most likely the
+            # Only user in the /home diretory, and for an
+            # example, set the local password as well.
             user=`ls /home | head -1`
             passwd $user <<EOF
             DiffiCultPassWordToRemember
@@ -94,6 +100,9 @@ resources:
             do
              apt-get install python-${n}client  -y
             done
+
+            # apt-get install python-pip -y
+            # pip install --upgrade python-swiftclient
 
             echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
 
@@ -136,18 +145,18 @@ resources:
     type: OS::Neutron::Port
     properties:
       network: { get_param: network }
- server_1_floating_ip:
-   type: OS::Neutron::FloatingIP
-   properties:
-     floating_network: { get_param: public_network }
- server_1_floating_ip_association:
-   type: OS::Neutron::FloatingIPAssociation
-   properties:
-     floatingip_id: { get_resource: server_1_floating_ip }
-     port_id: { get_param: server_1_port }
 
-#  server_1_floating_ip_association:
-#    type: OS::Neutron::FloatingIPAssociation
-#    properties:
-#      floatingip_id: { get_param: floating_ip_id }
-#      port_id: { get_resource: server_1_port }
+  server_1_floating_ip_association:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_param: floating_ip_id }
+      port_id: { get_resource: server_1_port }
+
+  # # If the Nova version is fixed, perhaps we can just
+  # # pass via IP address
+
+  # server_1_floating_ip_association:
+  #   type: OS::Nova::FloatingIPAssociation
+  #   properties:
+  #     floating_ip: { get_param: floating_ip }
+  #     server_id: { get_resource: cloud_tools }
