@@ -101,8 +101,10 @@ resources:
              apt-get install python-${n}client  -y
             done
 
-            # apt-get install python-pip -y
-            # pip install --upgrade python-swiftclient
+            apt-get install python-pip -y
+            pip install --upgrade python-swiftclient
+            pip install --upgrade python-monascaclient
+            easy_install --upgrade requests[security]
 
             echo "`ip addr show eth0 | awk '/ inet / {print $2}' | cut -d\/ -f1`  `hostname`" >> /etc/hosts
 

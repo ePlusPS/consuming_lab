@@ -25,6 +25,14 @@ parameters:
     description: Image ID or image name to use for the server
     constraints:
       - custom_constraint: glance.image
+  network:
+    type: string
+    description: private network on which the VM lives
+    default: default-network
+  public_net:
+    type: string
+    description: public network name from which to pull a Floating FloatingIP
+    default: Ext-Net
   admin_pass:
     type: string
     description: Admin password
@@ -51,16 +59,39 @@ resources:
       key_name: { get_param: key_name }
       image: { get_param: image }
       flavor: { get_param: flavor }
-      admin_pass: { get_param: admin_pass }
-      user_data:
+      networks:
+        - port: { get_resource: server_1_port }
+     user_data:
         str_replace:
           template: |
             #!/bin/bash
-            echo db_port
+            echo $db_port
+
+            user=`ls /home | head -1`
+            passwd $user <<EOF
+            $admin_pass
+            $admin_pass
+            EOF
           params:
-            db_port: { get_param: db_port }
+            $db_port: { get_param: db_port }
+            $admin_pass: { get_param: admin_pass }
+
+  server_1_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: network }
+
+  server_1_floating_ip_id:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_net }
+  server_1_floating_ip_association:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: server_1_floating_ip_id }
+      port_id: { get_resource: server_1_port }
 
 outputs:
   server_networks:
-    description: The networks of the deployed server
-    value: { get_attr: [server, networks] }
+    description: The Floating IP address of the deployed server
+    value: { get_attr: [server_1_floating_ip_id, floating_ip_address] }

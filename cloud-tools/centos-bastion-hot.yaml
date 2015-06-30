@@ -80,8 +80,7 @@ resources:
             neutron
             glance
             heat
-            swift
-            monasca
+            cinder
             designate
             openstack
             keystone'
@@ -91,7 +90,8 @@ resources:
              pip install python-${n}client
             done
 
-            pip install python-cinderclient==1.1.1
+            pip install python-swiftclient
+            pip install python-monascaclient
             easy_install --upgrade requests[security]
 
 
