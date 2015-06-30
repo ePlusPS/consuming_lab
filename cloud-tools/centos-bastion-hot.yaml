@@ -44,7 +44,6 @@ parameters:
     type: string
     label: ID of Floating IP
 
-
 resources:
   cloud_tools:
     type: OS::Nova::Server
@@ -54,6 +53,7 @@ resources:
       flavor: { get_param: instance_type }
       networks:
         - port: { get_resource: server_1_port }
+      name: centos-tools
       user_data:
         str_replace:
           template: |

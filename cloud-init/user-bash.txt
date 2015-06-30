@@ -1,0 +1,10 @@
+#!/bin/bash
+apt-get update –y
+apt-get install git
+cat > /tmp/script.sh <<EOF
+#!/bin/bash
+echo "A Script!" >& /tmp/script.sh
+EOF
+chmod +x /tmp/script.sh
+/tmp/script.sh
+git clone https://github.com/onecloud/consuming_lab
