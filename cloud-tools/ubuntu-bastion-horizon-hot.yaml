@@ -153,6 +153,6 @@ outputs:
     value: { get_attr: [server_1_floating_ip_id, floating_ip_address] }
   server_info:
     description: values of server
-    value: { get_attr: [show]}
+    value: { get_attr: [cloud_tools, show]}
 
 
