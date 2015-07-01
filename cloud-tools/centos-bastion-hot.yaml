@@ -154,3 +154,12 @@ resources:
     properties:
       floatingip_id: { get_param: floating_ip_id }
       port_id: { get_resource: server_1_port }
+
+outputs:
+  server_floating_ip:
+    description: The Floating IP address of the deployed server
+    value: { get_attr: [floating_ip_id, floating_ip_address] }
+  server_info:
+    description: values of server
+    value: { get_attr: [show]}
+

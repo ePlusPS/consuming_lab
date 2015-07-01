@@ -86,7 +86,7 @@ resources:
             EOF
 
             chsh -s /bin/bash $user
-            
+
             apt-get update -y
             clients='nova
             neutron
@@ -165,3 +165,14 @@ resources:
   #   properties:
   #     floating_ip: { get_param: floating_ip }
   #     server_id: { get_resource: cloud_tools }
+
+outputs:
+  server_floating_ip:
+    description: The Floating IP address of the deployed server
+    value: { get_attr: [server_1_floating_ip_id, floating_ip_address] }
+  server_info:
+    description: values of server
+    value: { get_attr: [show]}
+
+
+
