@@ -55,6 +55,7 @@ resources:
       flavor: { get_param: instance_type }
       networks:
         - port: { get_resource: server_1_port }
+      admin_user: ubuntu
       user_data:
         str_replace:
           template: |
@@ -70,6 +71,8 @@ resources:
             DiffiCultPassWordToRemember
             DiffiCultPassWordToRemember
             EOF
+
+            chsh -s /bin/bash $user
 
             apt-get update -y
             clients='nova

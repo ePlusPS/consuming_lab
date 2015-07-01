@@ -63,6 +63,7 @@ resources:
     properties:
       name: cloud-tools
       key_name: { get_param: key_name }
+      admin_user: ubuntu
       image: { get_param: image }
       flavor: { get_param: instance_type }
       networks:
@@ -84,6 +85,8 @@ resources:
             DiffiCultPassWordToRemember
             EOF
 
+            chsh -s /bin/bash $user
+            
             apt-get update -y
             clients='nova
             neutron

@@ -54,6 +54,7 @@ resources:
       networks:
         - port: { get_resource: server_1_port }
       name: centos-tools
+      admin_user: cloud-user
       user_data:
         str_replace:
           template: |
@@ -67,6 +68,8 @@ resources:
             DiffiCultPassWordToRemember
             DiffiCultPassWordToRemember
             EOF
+
+            chsh -s /bin/bash $user
 
             yum update -y
 
