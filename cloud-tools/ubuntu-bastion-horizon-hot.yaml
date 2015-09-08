@@ -35,15 +35,9 @@ parameters:
   tenant_name:
     type: string
     label: Tenant Project Name
-    constraints:
-      - allowed_pattern: "[a-z]+[a-zA-Z0-9-]*"
-        description: User name must start with an uppercase character
   user_name:
     type: string
     label: Tenant User Name
-    constraints:
-      - allowed_pattern: "[a-z]+[a-zA-Z0-9]*"
-        description: User name must start with an uppercase character
 
 resources:
   cloud_tools:
