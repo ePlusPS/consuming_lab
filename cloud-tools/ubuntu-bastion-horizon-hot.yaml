@@ -49,7 +49,7 @@ resources:
   cloud_tools:
     type: OS::Nova::Server
     properties:
-      name: cloud-tools
+      name: { get_param: user_name }
       key_name: { get_param: key_name }
       image: { get_param: image }
       flavor: { get_param: instance_type }
