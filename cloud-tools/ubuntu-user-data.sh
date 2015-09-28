@@ -36,16 +36,12 @@ cat > /home/$user/openrc_first.sh <<EOF
 # OpenStack API is version 2.0. For example, your cloud provider may implement
 # Image API v1.1, Block Storage API v2, and Compute API v2.0. OS_AUTH_URL is
 # only for the Identity API served through keystone.
-export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
+export OS_AUTH_URL=http://10.1.64.17:5000/v2.0
 
 # With the addition of Keystone we have standardized on the term **tenant**
 # as the entity that owns the resources.  We really only need the Tenant Name
 # export OS_TENANT_ID=88d8c5d66153476d9d96ca98df9b0894
-echo "Please enter your OpenStack Tenant Name: "
-read -r OS_TENANT_INPUT
-export OS_TENANT_NAME=\$OS_TENANT_INPUT
-echo "You set your Tenant Name to: \${OS_TENANT_NAME}"
-
+export OS_TENANT_NAME=class
 export OS_PROJECT_NAME=\${OS_TENANT_NAME}
 
 # In addition to the owning entity (tenant), OpenStack stores the entity
@@ -62,17 +58,13 @@ export OS_PASSWORD=\$OS_PASSWORD_INPUT
 
 # If your configuration has multiple regions, we set that information here.
 # OS_REGION_NAME is optional and only valid in certain environments.
-export OS_REGION_NAME="NCE"
-echo "Your region is set to \${OS_REGION_NAME}"
-
-export PS1='[\u@\h \W(nce)]\$ '
+export PS1='[\u@\h \W(os_class)]\$ '
 
 cat > /home/$user/openrc.sh <<EOD
 #!/bin/bash
-export OS_AUTH_URL=https://chrcnc-api.os.cloud.twc.net:5000/v2.0
+export OS_AUTH_URL=http://10.1.64.17:5000/v2.0
 export OS_TENANT_NAME="\${OS_TENANT_NAME}"
 export OS_USERNAME="\${OS_USERNAME}"
-export OS_REGION_NAME="NCE"
 
 echo "Please enter your OpenStack Password: "
 read -sr OS_PASSWORD_INPUT
