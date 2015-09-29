@@ -19,7 +19,7 @@ python -m SimpleHTTPServer 80
 EOF
 
 nova boot ${vmname} --image trusty --flavor m1.small --key-name ${keyname} --nic net-id=47ea0f46-5728-4a22-bab7-1417a21539fd --config-drive True --user-data ./data.txt
-nova floating-ip-associate admin ${floatingip}
+nova floating-ip-associate ${vmname} ${floatingip}
 
 test=''
 until [[ $(wget -qO - http://${floatingip}/test.htm) =~ done ]]
