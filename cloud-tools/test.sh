@@ -29,12 +29,12 @@ done
 
 nova floating-ip-associate ${vmname} ${floatingip}
 
-until [[ $(wget -qO - http://${floatingip}/test.htm) =~ done ]]
+until [[ $(wget -t 5 -T 5 -qO - http://${floatingip}/test.htm) =~ done ]]
  do echo not done
  sleep 5
 done
 
-echo "Test is $(wget -qO - http://${floatingip}/test.htm)"
+echo "Test is $(wget -t 5 -T 5 -qO - http://${floatingip}/test.htm)"
 
 nova delete ${vmname}
 nova floating-ip-delete ${floatingip}
