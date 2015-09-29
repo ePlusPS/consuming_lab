@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex 
 
 vmname=${1:-admin}
 keyname=${2:-class2}
@@ -20,6 +21,12 @@ EOD
 floatingip=`nova floating-ip-create sixtyfour | awk '/sixtyfour/ {print $2}'`
 net_id=`neutron net-list | grep ${netname} | awk '/ | / {print $2}'`
 nova boot ${vmname} --image trusty --flavor m1.small --key-name ${keyname} --nic net-id=${net_id} --config-drive True --user-data ./data.txt
+
+until [[ `nova list | grep ${vmname}` =~ ACTIVE ]]; do
+ echo 'waiting for ACTIVE'
+ sleep 5
+done
+
 nova floating-ip-associate ${vmname} ${floatingip}
 
 until [[ $(wget -qO - http://${floatingip}/test.htm) =~ done ]]
