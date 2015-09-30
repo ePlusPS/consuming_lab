@@ -7,21 +7,14 @@ OpenStack environment, or user-data scripts to automate
 OpenStack tool installs.
 
 Ubuntu Images:
-Tested against the Ubuntu-Server-14.04 image
-ubuntu-bastion-hot.yaml
+Tested against the 'trusty' Ubuntu-Server-14.04 image
 ubuntu-user-data.sh
 
-Tested against the CentOS-Server-7-x86_64 image
-centos-bastion-hot.yaml
+Tested against the centos7 image
 centos-user-data.sh
 
 To use these scripts, you will need a few pieces of
 information for your project:
 
-Tenant name (aka Project name)
-User name (aka your EID or service account name)
-a Floating IP address ID (for the HOT templates)
-  - note this is not the floating IP Address
-  - this is the ID of an IP that has been allocated
-    to your project
+In addition to the user data scripts, there is an example HOT script that can be used as an example for a HEAT deployment. And there is a test script that creates an example auto deploy/test/delete cycle.
 
