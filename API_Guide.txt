@@ -79,21 +79,13 @@ For example: GLANCE ENDPOINT
 
 # Get image list from glance
 
-curl -s https://${endpoint}:8774/v2/${tenant_id}/images 
--X GET 
--H "X-Auth-Project-Id: admin" 
--H "Accept: application/json" 
--H "X-Auth-Token: ${token} | python -mjson.tool
+curl -s https://${endpoint}:8774/v2/${tenant_id}/images -X GET -H "X-Auth-Project-Id: admin" -H "Accept: application/json" -H "X-Auth-Token: ${token} | python -mjson.tool
 
 export image_id=REPLACE_WITH_IMAGE_ID
 
 # Get flavor list from nova
 
-curl -s https://${endpoint}:8774/v2/${tenant_id}/flavors 
--X GET 
--H "X-Auth-Project-Id: admin" 
--H "Accept: application/json" 
--H "X-Auth-Token: ${token}" | python -mjson.tool
+curl -s https://${endpoint}:8774/v2/${tenant_id}/flavors -X GET -H "X-Auth-Project-Id: admin" -H "Accept: application/json" -H "X-Auth-Token: ${token}" | python -mjson.tool
 
 export flavor_id= REPLACE_WITH_FLAVOR_ID
 
@@ -104,12 +96,7 @@ export keypair=REPLACE_WITH_KEYPAIR
 
 # build server
 
-curl -i https://${endpoint}:8774/v2/${tenant_id}/servers 
--X POST -H "X-Auth-Project-Id: admin" 
--H "Content-Type: application/json" 
--H "Accept: application/json" 
--H "X-Auth-Token: ${token}" 
--d \'{"server": {"name": "instance1", "imageRef": "${image_id}", "key_name": “keypair_1“, "flavorRef": “${flavor_id}", "max_count": 1, "min_count": 1}}\'
+curl -i https://${endpoint}:8774/v2/${tenant_id}/servers -X POST -H "X-Auth-Project-Id: admin" -H "Content-Type: application/json" -H "Accept: application/json" -H "X-Auth-Token: ${token}" -d \'{"server": {"name": "instance1", "imageRef": "${image_id}", "key_name": “keypair_1“, "flavorRef": “${flavor_id}", "max_count": 1, "min_count": 1}}\'
 
 
 #alternative to python -mjson.tool
